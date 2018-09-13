@@ -1,4 +1,4 @@
-class Rules
+class Categories
 
   def ones
   end
