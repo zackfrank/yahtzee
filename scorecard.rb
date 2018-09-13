@@ -29,11 +29,24 @@ class Scorecard
 
   def is_full
     all_scores = @scorecard.values
-    return false if all_scores.any? 0
+    all_scores.any?(0) ? false : true
   end
 
   def part_one_total
-    @scorecard[:ones] + @scorecard[:twos] + @scorecard[:threes] + @scorecard[:fours] + @scorecard[:fives] + @scorecard[:sixes]
+    total = 0
+    lower_half = [@scorecard[:ones], @scorecard[:twos], @scorecard[:threes], @scorecard[:fours], @scorecard[:fives], @scorecard[:sixes]]
+    lower_half.each do |value|
+      unless value == "X"
+        total += value
+      end
+    end
+    total
+  end
+
+  def grand_total
+    all_valid_scores = @scorecard.values.select {|value| value != "X"}
+    subtotal = all_valid_scores.reduce(:+)
+    subtotal + @bonus
   end
 
 end

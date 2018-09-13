@@ -5,7 +5,6 @@ require_relative 'categories.rb'
 class Gameplay
 
   def initialize
-    @dice = Dice.new
     @scorecard = Scorecard.new
     @categories = Categories.new
     @round = 1
@@ -25,6 +24,7 @@ class Gameplay
     print "[Enter] to take your first roll for Round #{@round}"
     gets.chomp
     puts
+    @dice = Dice.new
     @dice.display
     puts
     puts "Which would you like to re-roll?"
@@ -64,15 +64,6 @@ class Gameplay
     select_category
   end
 
-  def roll_three
-    system "clear"
-    puts "Roll Three, Final Roll for Round #{@round}:"
-    @dice.display
-    puts
-    select_category
-    next_round
-  end
-
   def next_round
     if @scorecard.is_full
       end_game
@@ -85,6 +76,7 @@ class Gameplay
   def select_dice_to_reroll
     puts "Which dice would you like to re-roll? Type integers and separate with a comma."
     dice_to_reroll = gets.chomp.split
+    puts "Dice To Reroll: #{dice_to_reroll}"
     dice_to_reroll.each do |die|
       die = die.to_i - 1
       @dice.reroll(die)
@@ -119,16 +111,48 @@ class Gameplay
       @categories.twos(@scorecard, @dice.roll)
     elsif choice == 3
       @categories.threes(@scorecard, @dice.roll)
+    elsif choice == 4
+      @categories.fours(@scorecard, @dice.roll)
+    elsif choice == 5
+      @categories.fives(@scorecard, @dice.roll)
+    elsif choice == 6
+      @categories.sixes(@scorecard, @dice.roll)
+    elsif choice == 7
+      @categories.three_of_a_kind(@scorecard, @dice.roll)
+    elsif choice == 8
+      @categories.four_of_a_kind(@scorecard, @dice.roll)
+    elsif choice == 9
+      @categories.full_house(@scorecard, @dice.roll)
+    elsif choice == 10
+      @categories.small_straight(@scorecard, @dice.roll)
+    elsif choice == 11
+      @categories.large_straight(@scorecard, @dice.roll)
+    elsif choice == 12
+      @categories.yahtzee(@scorecard, @dice.roll)
+    elsif choice == 13
+      @categories.chance(@scorecard, @dice.roll)
     end
+    @categories.bonus(@scorecard)
+    puts "Scoreboard:"
+    p @scorecard.scorecard
+    puts "[Enter] to continue."
+    gets.chomp
+    next_round
   end
 
   def end_game
+    system "clear"
+    puts "Game Over!"
+    puts "Your score was: #{scoreboard.grand_total}"
+    puts "Great job!"
+    puts
     puts "[Enter] to end the game"
     puts "[1] to play again"
     choice = gets.chomp.to_i
     if choice == 1
-      Game.new
-      Game.start
+      @scorecard = Scorecard.new
+      @round = 1
+      self.start
     end
   end
   
